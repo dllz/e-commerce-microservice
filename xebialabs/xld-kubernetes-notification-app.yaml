@@ -1,0 +1,36 @@
+apiVersion: xl-deploy/v1
+kind: Applications
+spec:
+- name: xl-up-master
+  type: core.Directory
+  children:
+  - name: K8S
+    type: core.Directory
+    children:
+    - name: xl-up-master-notification-mongodb
+      type: udm.Application
+      children:
+      - name: !value BUILD_ID
+        type: udm.DeploymentPackage
+        deployables:
+        - name: xl-up-master-notification-mongodb
+          type: k8s.ResourcesFile
+          file: !file ../notification/build/kubernetes/notification-mongodb.yml
+          tags:
+          - xl-demo
+    - name: xl-up-master-notification
+      type: udm.Application
+      children:
+      - name: !value BUILD_ID
+        type: udm.DeploymentPackage
+        deployables:
+        - name: xl-up-master-invoice-notification
+          type: k8s.ResourcesFile
+          file: !file ../notification/build/kubernetes/notification-deployment.yml
+          tags:
+          - xl-demo
+        - name: xl-up-master-notification-svc
+          type: k8s.ResourcesFile
+          file: !file ../notification/build/kubernetes/notification-service.yml
+          tags:
+          - xl-demo

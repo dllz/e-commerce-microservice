@@ -1,0 +1,8 @@
+apiVersion: xl-deploy/v1
+kind: Applications
+spec:
+- name: xl-up-master
+  type: core.Directory
+  children:
+  - name: K8S
+    type: core.Directory

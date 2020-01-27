@@ -1,0 +1,34 @@
+apiVersion: xl-deploy/v1
+kind: Infrastructure
+spec:
+- name: xl-up-master
+  type: core.Directory
+  children:
+  - name: eks-xl-up-master
+    type: k8s.Master
+    isEKS: true
+    clusterName: xl-up-master
+    accessKey: !value AWSAccessKey
+    accessSecret: !value AWSAccessSecret
+    apiServerURL: https://6733D0673C7DB1A87D7D7FA802E7EC9E.yl4.eu-west-1.eks.amazonaws.com
+    skipTLS: true
+    children:
+    - name: xl-demo
+      type: k8s.Namespace
+      namespaceName: xl-demo
+      tags:
+      - xl-demo
+
+---
+
+apiVersion: xl-deploy/v1
+kind: Environments
+spec:
+- name: xl-up-master
+  type: core.Directory
+  children:
+  - name: aws-eks-xl-up-master
+    type: udm.Environment
+    members:
+    - Infrastructure/xl-up-master/eks-xl-up-master/xl-demo
+    - Infrastructure/xl-up-master/eks-xl-up-master

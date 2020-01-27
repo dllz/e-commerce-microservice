@@ -1,0 +1,52 @@
+apiVersion: xl-deploy/v1
+kind: Applications
+spec:
+- name: xl-up-master
+  type: core.Directory
+  children:
+  - name: K8S
+    type: core.Directory
+    children:
+    - name: xl-up-master-store-mysql
+      type: udm.Application
+      children:
+      - name: !value BUILD_ID
+        type: udm.DeploymentPackage
+        deployables:
+        - name: xl-up-master-store-mysql
+          type: k8s.ResourcesFile
+          file: !file ../store/build/kubernetes/store-mysql.yml
+          tags:
+          - xl-demo
+    - name: xl-up-master-registry
+      type: udm.Application
+      children:
+      - name: !value BUILD_ID
+        type: udm.DeploymentPackage
+        deployables:
+        - name: xl-up-master-application-config
+          type: k8s.ResourcesFile
+          file: !file ../registry/kubernetes/application-configmap.yml
+          tags:
+          - xl-demo
+        - name: xl-up-master-jhipster-registry
+          type: k8s.ResourcesFile
+          file: !file ../registry/kubernetes/jhipster-registry.yml
+          tags:
+          - xl-demo
+    - name: xl-up-master-store
+      type: udm.Application
+      children:
+      - name: !value BUILD_ID
+        type: udm.DeploymentPackage
+        deployables:
+        - name: xl-up-master-store-deployment
+          type: k8s.ResourcesFile
+          file: !file ../store/build/kubernetes/store-deployment.yml
+          tags:
+          - xl-demo
+        - name: xl-up-master-store-svc
+          type: k8s.ResourcesFile
+          file: !file ../store/build/kubernetes/store-service.yml
+          tags:
+          - xl-demo

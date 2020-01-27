@@ -1,0 +1,83 @@
+# Microservice Application on Amazon EKS Usage
+
+## Prerequisites
+
+* You must have [Docker](https://docs.docker.com/install/) for your platform
+* You must have [docker-compose](https://docs.docker.com/compose/install/) installed
+
+### AWS-specific steps
+
+Follow the instructions in the [aws/README.md](https://github.com/xebialabs/blueprints/blob/master/aws/README.md) on how to:
+
+* Download and install the AWS CLI
+* Obtain the necessary AWS Access and Secret Keys
+
+### Environment variables
+
+If you intend to use the Jenkins CI/CD pipeline to generate your own Docker images, you will need to set the following environment variables before running `docker-compose up` in the same terminal session:
+
+```plain
+export GITHUB_USER=<your GitHub user name>
+export GITHUB_TOKEN=<your GitHub access token, needed only if you are using a private repository, this variable can be skipped for public repositories>
+export DOCKER_USER=<your Docker user name>
+export DOCKER_PASS=<your Docker password>
+```
+
+
+
+### Docker repository configuration
+
+1. Replace the occurrences of `<your-dockerhub-user>` in the following files with your own DockerHub ID:
+
+    * `notification/kubernetes/notification-deployment.yml`
+    * `store/kubernetes/store-deployment.yml`
+    * `invoice/kubernetes/invoice-deployment.yml`
+
+2. Commit all changes and push this cloned repository to your GitHub account so that Jenkins can checkout `https://github.com/${GITHUB_USER}/e-commerce-microservice.git`.
+
+## Start the XL Platform
+
+Follow the instructions in `xebialabs/USAGE-docker-compose.md`.
+
+
+### XL CLI
+
+Watch the log output for `docker_xl-cli_1`. Its job is to connect XL Release to XL Deploy. It must exit with code `0`. If not, open a new terminal in the same directory and run:
+
+```plain
+docker-compose up -d xl-cli
+```
+
+## Deploy the blueprint to the XL Platform
+
+To deploy this blueprint to the XebiaLabs DevOps Platform, open up a terminal in the `e-commerce-microservice` folder where you generated the configuration. Then run:
+
+```plain
+xl apply -f xebialabs.yaml
+```
+
+## Deploy to AWS
+
+Go to XL Release and click on `xl-up-master` under the 'Design' tab.
+
+### Provision the CI/CD pipeline
+
+1. Click 'New Release' under `xl-up-master-ci-cd`.
+    1. Give the Release a name.
+    2. Click 'Create'.
+    3. Click 'Start Release'.
+
+## Undeploy from AWS
+
+Go to XL Release and click on `xl-up-master` under the 'Design' tab.
+
+### Deprovision the CI/CD pipeline
+
+1. Click 'New Release' under `xl-up-master-destroy`.
+    1. Give the Release a name.
+    2. Click 'Create'.
+    3. Click 'Start Release'.
+
+## Extras
+
+* You can find a detailed tutorial for this blueprint [here](https://docs.xebialabs.com/v.9.0/xl-release/how-to/deploy-to-aws-using-blueprints)

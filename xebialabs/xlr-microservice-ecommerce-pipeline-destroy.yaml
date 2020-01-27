@@ -1,0 +1,54 @@
+apiVersion: xl-release/v1
+kind: Templates
+spec:
+- name: xl-up-master
+  type: xlrelease.Folder
+  children:
+  - name: xl-up-master-destroy
+    type: xlrelease.Release
+    description: |
+      This XL Release template shows how to undeploy an application, based on microservices architecture, to AWS EKS using XL Deploy.
+    tags:
+    - AWS
+    - EKS
+    - xl-up-master
+    scriptUsername: !value XL_RELEASE_USERNAME
+    scriptUserPassword: !value XL_RELEASE_PASSWORD
+    phases:
+    - name: Undeploy Application
+      type: xlrelease.Phase
+      tasks:
+      - name: Undeploy stateless services
+        type: xlrelease.ParallelGroup
+        tasks:
+        - name: Undeploy registry svc
+          type: xldeploy.Undeploy
+          server: XL Deploy
+          deployedApplication: Environments/xl-up-master/aws-eks-xl-up-master/xl-up-master-registry
+        - name: Undeploy invoice svc
+          type: xldeploy.Undeploy
+          server: XL Deploy
+          deployedApplication: Environments/xl-up-master/aws-eks-xl-up-master/xl-up-master-invoice
+        - name: Undeploy notification svc
+          type: xldeploy.Undeploy
+          server: XL Deploy
+          deployedApplication: Environments/xl-up-master/aws-eks-xl-up-master/xl-up-master-notification
+        - name: Undeploy store svc
+          type: xldeploy.Undeploy
+          server: XL Deploy
+          deployedApplication: Environments/xl-up-master/aws-eks-xl-up-master/xl-up-master-store
+      - name: Undeploy stateful services
+        type: xlrelease.ParallelGroup
+        tasks:
+        - name: Undeploy invoice mysql svc
+          type: xldeploy.Undeploy
+          server: XL Deploy
+          deployedApplication: Environments/xl-up-master/aws-eks-xl-up-master/xl-up-master-invoice-mysql
+        - name: Undeploy store mysql svc
+          type: xldeploy.Undeploy
+          server: XL Deploy
+          deployedApplication: Environments/xl-up-master/aws-eks-xl-up-master/xl-up-master-store-mysql
+        - name: Undeploy notification mongodb svc
+          type: xldeploy.Undeploy
+          server: XL Deploy
+          deployedApplication: Environments/xl-up-master/aws-eks-xl-up-master/xl-up-master-notification-mongodb

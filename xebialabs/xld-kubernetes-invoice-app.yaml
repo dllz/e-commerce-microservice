@@ -1,0 +1,36 @@
+apiVersion: xl-deploy/v1
+kind: Applications
+spec:
+- name: xl-up-master
+  type: core.Directory
+  children:
+  - name: K8S
+    type: core.Directory
+    children:
+    - name: xl-up-master-invoice-mysql
+      type: udm.Application
+      children:
+      - name: !value BUILD_ID
+        type: udm.DeploymentPackage
+        deployables:
+        - name: xl-up-master-invoice-mysql
+          type: k8s.ResourcesFile
+          file: !file ../invoice/build/kubernetes/invoice-mysql.yml
+          tags:
+          - xl-demo
+    - name: xl-up-master-invoice
+      type: udm.Application
+      children:
+      - name: !value BUILD_ID
+        type: udm.DeploymentPackage
+        deployables:
+        - name: xl-up-master-invoice-deployment
+          type: k8s.ResourcesFile
+          file: !file ../invoice/build/kubernetes/invoice-deployment.yml
+          tags:
+          - xl-demo
+        - name: xl-up-master-invoice-svc
+          type: k8s.ResourcesFile
+          file: !file ../invoice/build/kubernetes/invoice-service.yml
+          tags:
+          - xl-demo
